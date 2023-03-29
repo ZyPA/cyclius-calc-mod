@@ -1,0 +1,27 @@
+.cyclius-calc-bis {
+  visibility: hidden;
+  margin-left: .25rem;
+}
+
+.cyclius-calc-isBest {
+  visibility: visible;
+}
+
+.cyclius-calc-item {
+  float: right
+}
+
+.cyclius-calc-item[data-state='increasing']::after,
+.cyclius-calc-item[data-state='decreasing']::after {
+  font-size: 75%;
+  margin-left: .25rem;
+}
+
+.cyclius-calc-item[data-state='increasing']::after {
+  content: '▲';
+  color: #3f0;
+}
+.cyclius-calc-item[data-state='decreasing']::after {
+  content: '▼';
+  color: #f30;
+}
