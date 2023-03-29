@@ -15,3 +15,6 @@ If you have any sort of experience with the modding api for Cookie Clicker and h
 # Planned features:
 - Make the suggestion part, also consider your currently active slot.
 - Optimize the code.
+
+# Known issues:
+- If your game is very slow to load, the mod wont work. currently the threshold is more than 5 seconds to fully load
