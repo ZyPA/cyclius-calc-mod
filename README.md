@@ -17,4 +17,4 @@ If you have any sort of experience with the modding api for Cookie Clicker and h
 - Optimize the code.
 
 # Known issues:
-- If your game is very slow to load, the mod wont work. currently the threshold is more than 5 seconds to fully load
+- If your game is very slow to load, the mod wont work. currently the threshold is more than 5 seconds to fully load. this is because i currently have no way to check if the pantheon has been initialized, and if the mod loads before the pantheon is initialized it throws an error, so currently ive set it to just wait 5 seconds to load the mod. and therefor if the pantheon hasnt been initialized after 5 seconds, you will not be able to use the mod,
