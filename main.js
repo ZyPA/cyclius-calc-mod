@@ -6,9 +6,9 @@ MyMod.launch = function(){
   Game.registerMod('cycliusCalc', {
     init: function () {
       Game.Notify(`Cyclius Calculator loaded!`, '', [16, 5]);
-      CCSE.MinigameReplacer(this.init, 'Temple');
+      CCSE.MinigameReplacer(this.setup, 'Temple');
     },
-    init: function () {
+    setup: function () {
       var mg = Game.Objects['Temple'].minigame;
       this.cyclius = mg.gods['ages'];
 
