@@ -16,6 +16,3 @@ If you have any sort of experience with the modding api for Cookie Clicker and h
 - Make the suggestion part, also consider your currently active slot.
 - Optimize the code.
 - Rewrite the mod to fully utilize CCSE's functionality.
-
-# Known Issues:
-- If you dont have the Pantheon minigame unlocked when the mod is loaded, the mod wont function, if this occurs please reload the game to initialize the mod properly.
