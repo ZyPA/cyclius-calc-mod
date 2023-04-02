@@ -1,6 +1,6 @@
 .cyclius-calc-container {
   --clr-green: #3f0;
-  --clr-red: #3f0;
+  --clr-red: #f30;
   float: right;
   display: flex;
   gap: .33rem;
