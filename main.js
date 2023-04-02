@@ -1,13 +1,18 @@
-setTimeout(() => {
+if(MyMod === undefined) var MyMod = {};
+if(typeof CCSE == 'undefined') Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
+
+MyMod.launch = function(){
+  MyMod.isLoaded = 1;
   Game.registerMod('cycliusCalc', {
     init: function () {
       Game.Notify(`Cyclius Calculator loaded!`, '', [16, 5]);
-
+      CCSE.MinigameReplacer(this.init, 'Temple');
+    },
+    init: function () {
       var mg = Game.Objects['Temple'].minigame;
       this.cyclius = mg.gods['ages'];
 
       this.loadStyle();
-
       setInterval(() => this.update(), 100);
     },
     update: function () {
@@ -96,4 +101,15 @@ setTimeout(() => {
       }
     },
   });
-}, 5000);
+}
+
+if(!MyMod.isLoaded){
+	if(CCSE && CCSE.isLoaded){
+		MyMod.launch();
+	}
+	else{
+		if(!CCSE) var CCSE = {};
+		if(!CCSE.postLoadHooks) CCSE.postLoadHooks = [];
+		CCSE.postLoadHooks.push(MyMod.launch);
+	}
+}
