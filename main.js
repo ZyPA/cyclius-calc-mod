@@ -1,19 +1,19 @@
-if (cycliusCalcBeta === undefined) var cycliusCalcBeta = {};
+if (cycliusCalc === undefined) var cycliusCalc = {};
 if (typeof CCSE == 'undefined')
   Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
-var MyMod = cycliusCalcBeta;
+var MyMod = cycliusCalc;
 
 MyMod.launch = function () {
-  Game.registerMod('cycliusCalcBeta', {
+  Game.registerMod('cycliusCalc', {
     init: function () {
-      Game.Notify(`Cyclius Calculator Beta loaded!`, '', [16, 5]);
+      Game.Notify(`Cyclius Calculator loaded!`, '', [16, 5]);
       let MOD = this;
 
       CCSE.MinigameReplacer(() => MOD.loadMod(), 'Temple');
       MyMod.isLoaded = 1;
     },
     loadMod: function () {
-      this.loadCSS('https://zypa.github.io/cyclius-calc-mod/main.css');
+      this.loadCSS(this.dir + '/main.css');
       requestAnimationFrame(() => this.renderMod());
     },
     getMult: function (time, slot) {
@@ -98,7 +98,7 @@ MyMod.launch = function () {
       const el = (slot) =>
         `<div class="cyclius-calc-container ${slot}-container"><span class="cyclius-calc-value ${slot}-value ${
           this.getMult(now, slot) > 0 ? 'green' : 'red'
-        }" data-is-increasing="false">${
+        }" data-is-increasing="${this.getMult(now, slot) < this.getMult(now + 1 / 1000 / 60 / 60, slot) ? 'true' : 'false'}">${
           (this.getMult(now, slot) > 0 ? '+' : '-') +
           Beautify(Math.abs(this.getMult(now, slot)), 2) +
           '%'
@@ -109,7 +109,7 @@ MyMod.launch = function () {
       requestAnimationFrame(() => this.renderMod());
     },
     loadCSS: function (src) {
-      var cssId = 'cycliusCalcBeta';
+      var cssId = 'cycliusCalc';
       if (!document.getElementById(cssId)) {
         var head = document.getElementsByTagName('head')[0];
         var link = document.createElement('link');
