@@ -71,6 +71,7 @@ MyMod.launch = function () {
       if (
         jadeAvg >= rubyAvg &&
         jadeAvg >= diaAvg &&
+        jadeAvg >= 0 &&
         jade >= current &&
         jade >= 0
       )
@@ -78,6 +79,7 @@ MyMod.launch = function () {
       else if (
         rubyAvg >= jadeAvg &&
         rubyAvg >= diaAvg &&
+        rubyAvg >= 0 &&
         ruby >= current &&
         ruby >= 0
       )
@@ -85,6 +87,7 @@ MyMod.launch = function () {
       else if (
         diaAvg >= jadeAvg &&
         diaAvg >= rubyAvg &&
+        diaAvg >= 0 &&
         dia >= current &&
         dia >= 0
       )
