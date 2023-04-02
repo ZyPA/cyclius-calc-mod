@@ -12,9 +12,10 @@ If you have any sort of experience with the modding api for Cookie Clicker and h
 - Suggests what the best slot would be right now. (Currently it has no idea what your currently active slot is. so it cant make decisions based on that. it only looks an hour ahead, and checks which slot has the highest average score for that hour.)
 - Poorly optimized code :D (the mod is so small that it shouldnt really be an issue tho.)
 
-# Planned features:
+# Todo:
 - Make the suggestion part, also consider your currently active slot.
 - Optimize the code.
+- Rewrite the mod to fully utilize CCSE's functionality.
 
 # Known Issues:
 - If you dont have the Pantheon minigame unlocked when the mod is loaded, the mod wont function, if this occurs please reload the game to initialize the mod properly.
