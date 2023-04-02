@@ -13,7 +13,7 @@ MyMod.launch = function () {
       MyMod.isLoaded = 1;
     },
     loadMod: function () {
-      this.loadCSS(this.dir + '/main.css');
+      this.loadCSS('https://zypa.github.io/cyclius-calc-mod/main.css');
       requestAnimationFrame(() => this.renderMod());
     },
     getMult: function (time, slot) {
