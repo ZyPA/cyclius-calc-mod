@@ -1,6 +1,6 @@
 {
-	"Name": "Cyclius Calculator",
-	"ID": "cycliusCalc",
+	"Name": "Cyclius Calculator Beta",
+	"ID": "cycliusCalcBeta",
 	"Author": "ZyPA",
 	"Description": "A calculator for the cyclius multipliers.",
 	"ModVersion": 1,

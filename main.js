@@ -1,113 +1,135 @@
-if(MyMod === undefined) var MyMod = {};
-if(typeof CCSE == 'undefined') Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
-MyMod.launch = function(){
-  MyMod.isLoaded = 1;
-  Game.registerMod('cycliusCalc', {
-    init: function () {
-      Game.Notify(`Cyclius Calculator loaded!`, '', [16, 5]);
-      CCSE.MinigameReplacer(() => {
-        var mg = Game.Objects['Temple'].minigame;
-        this.cyclius = mg.gods['ages'];
+if (cycliusCalcBeta === undefined) var cycliusCalcBeta = {};
+if (typeof CCSE == 'undefined')
+  Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
+var MyMod = cycliusCalcBeta;
 
-        this.loadStyle();
-        setInterval(() => this.update(), 100);
-      }, 'Temple');
+MyMod.launch = function () {
+  Game.registerMod('cycliusCalcBeta', {
+    init: function () {
+      Game.Notify(`Cyclius Calculator Beta loaded!`, '', [16, 5]);
+      let MOD = this;
+
+      CCSE.MinigameReplacer(() => MOD.loadMod(), 'Temple');
+      MyMod.isLoaded = 1;
     },
-    update: function () {
-      this.cyclius.desc1 =
-        loc('Effect cycles over %1 hours.', 3) + this.render(3, 'diamond');
-      this.cyclius.desc2 =
-        loc('Effect cycles over %1 hours.', 12) + this.render(12, 'ruby');
-      this.cyclius.desc3 =
-        loc('Effect cycles over %1 hours.', 24) + this.render(24, 'jade');
+    loadMod: function () {
+      this.loadCSS('https://zypa.github.io/cyclius-calc-mod/main.css');
+      requestAnimationFrame(() => this.renderMod());
     },
-    render: function (cycle, slot) {
-      var mult = this.getMult(this.getTime(), cycle);
-      var nextMult = this.getMult(this.getTime() + 1 / 3600000, cycle);
-      return (
-        `<span class="cyclius-calc-item cyclius-calc-bis ${
-          this.getBest(this.getTime()) == slot ? 'cyclius-calc-isBest' : ''
-        }">⭐</span>` +
-        `<span class="cyclius-calc-item ${
-          mult < 0 ? 'red' : 'green'
-        }" data-state="${mult < nextMult ? 'increasing' : 'decreasing'}">` +
-        (mult < 0 ? '' : '+') +
-        mult.toFixed(2) +
-        '%</span>'
-      );
+    getMult: function (time, slot) {
+      switch (slot) {
+        case 'diamond':
+          var cycle = 3;
+          break;
+        case 'ruby':
+          var cycle = 12;
+          break;
+        case 'jade':
+          var cycle = 24;
+          break;
+        default:
+          return 0;
+      }
+      return Math.sin(time * (Math.PI / cycle) * 2) * 15;
     },
     getBest: function (time) {
-      var diamondAvg = [],
+      const avg = (arr) => arr.reduce((acc, curr) => acc + curr) / arr.length;
+      var diaAvg = [],
         rubyAvg = [],
         jadeAvg = [];
 
-      for (let i = 1; i <= 60; i++) {
-        diamondAvg.push(this.getMult(time + i / 60, 3));
-        rubyAvg.push(this.getMult(time + i / 60, 12));
-        jadeAvg.push(this.getMult(time + i / 60, 24));
+      switch (Game.hasGod('ages')) {
+        case 1:
+          var activeSlot = 'diamond';
+          break;
+        case 2:
+          var activeSlot = 'ruby';
+          break;
+        case 3:
+          var activeSlot = 'jade';
+          break;
+        default:
+          var activeSlot = 'none';
+          break;
       }
 
-      diamondAvg = diamondAvg.reduce((p, c) => p + c, 0) / diamondAvg.length;
-      rubyAvg = rubyAvg.reduce((p, c) => p + c, 0) / rubyAvg.length;
-      jadeAvg = jadeAvg.reduce((p, c) => p + c, 0) / jadeAvg.length;
+      const current = this.getMult(time, activeSlot),
+        dia = this.getMult(time, 'diamond'),
+        ruby = this.getMult(time, 'ruby'),
+        jade = this.getMult(time, 'jade');
+
+      for (let i = 1; i <= 60; i++) {
+        diaAvg.push(this.getMult(time + i / 60, 'diamond'));
+        rubyAvg.push(this.getMult(time + i / 60, 'ruby'));
+        jadeAvg.push(this.getMult(time + i / 60, 'jade'));
+      }
+
+      diaAvg = avg(diaAvg);
+      rubyAvg = avg(rubyAvg);
+      jadeAvg = avg(jadeAvg);
 
       if (
-        diamondAvg > rubyAvg &&
-        diamondAvg > jadeAvg &&
-        diamondAvg > 0 &&
-        this.getMult(this.getTime(), 3) >= 0
-      ) {
-        return 'diamond';
-      } else if (
-        rubyAvg > diamondAvg &&
-        rubyAvg > jadeAvg &&
-        rubyAvg > 0 &&
-        this.getMult(this.getTime(), 12) >= 0
-      ) {
-        return 'ruby';
-      } else if (
-        jadeAvg > diamondAvg &&
-        jadeAvg > rubyAvg &&
-        jadeAvg > 0 &&
-        this.getMult(this.getTime(), 24) >= 0
-      ) {
+        jadeAvg >= rubyAvg &&
+        jadeAvg >= diaAvg &&
+        jade >= current &&
+        jade >= 0
+      )
         return 'jade';
-      } else {
-        return 'none';
-      }
+      else if (
+        rubyAvg >= jadeAvg &&
+        rubyAvg >= diaAvg &&
+        ruby >= current &&
+        ruby >= 0
+      )
+        return 'ruby';
+      else if (
+        diaAvg >= jadeAvg &&
+        diaAvg >= rubyAvg &&
+        dia >= current &&
+        dia >= 0
+      )
+        return 'diamond';
+      else if (current >= 0) return activeSlot;
+      else return 'none';
     },
-    getTime: function () {
-      return new Date().getTime() / 60 / 60 / 1000;
+    renderMod: function () {
+      var now = new Date().getTime() / 1000 / 60 / 60;
+      var cyclius = Game.Objects['Temple'].minigame.gods.ages;
+      const el = (slot) =>
+        `<div class="cyclius-calc-container ${slot}-container"><span class="cyclius-calc-value ${slot}-value ${
+          this.getMult(now, slot) > 0 ? 'green' : 'red'
+        }" data-is-increasing="false">${
+          (this.getMult(now, slot) > 0 ? '+' : '-') +
+          Beautify(Math.abs(this.getMult(now, slot)), 2) +
+          '%'
+        }</span><span class="cyclius-calc-bis ${slot}-bis" data-is-best="${this.getBest(now) == slot ? 'true' : 'false'}">⭐</span></div>`;
+      cyclius.desc1 = loc('Effect cycles over %1 hours.', 3) + el('diamond');
+      cyclius.desc2 = loc('Effect cycles over %1 hours.', 12) + el('ruby');
+      cyclius.desc3 = loc('Effect cycles over %1 hours.', 24) + el('jade');
+      requestAnimationFrame(() => this.renderMod());
     },
-    getMult: function (time, cycle) {
-      return Math.sin(time * (Math.PI / cycle) * 2) * 15;
-    },
-    loadStyle: function () {
-      var css = `.cyclius-calc-bis{visibility:hidden;margin-left:.25rem}.cyclius-calc-isBest{visibility:visible}.cyclius-calc-item{float:right}.cyclius-calc-item[data-state=decreasing]::after,.cyclius-calc-item[data-state=increasing]::after{font-size:75%;margin-left:.25rem}.cyclius-calc-item[data-state=increasing]::after{content:'▲';color:#3f0}.cyclius-calc-item[data-state=decreasing]::after{content:'▼';color:#f30}`;
-
-      (head = document.head || document.getElementsByTagName('head')[0]),
-        (style = document.createElement('style'));
-
-      head.appendChild(style);
-
-      style.type = 'text/css';
-      if (style.styleSheet) {
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = css;
-      } else {
-        style.appendChild(document.createTextNode(css));
+    loadCSS: function (src) {
+      var cssId = 'cycliusCalcBeta';
+      if (!document.getElementById(cssId)) {
+        var head = document.getElementsByTagName('head')[0];
+        var link = document.createElement('link');
+        link.id = cssId;
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = src;
+        link.media = 'all';
+        head.appendChild(link);
       }
     },
   });
-}
+};
 
-if(!MyMod.isLoaded){
-	if(CCSE && CCSE.isLoaded){
-		MyMod.launch();
-	}
-	else{
-		if(!CCSE) var CCSE = {};
-		if(!CCSE.postLoadHooks) CCSE.postLoadHooks = [];
-		CCSE.postLoadHooks.push(MyMod.launch);
-	}
+if (!MyMod.isLoaded) {
+  if (CCSE && CCSE.isLoaded) {
+    MyMod.launch();
+  } else {
+    if (!CCSE) var CCSE = {};
+    if (!CCSE.postLoadHooks) CCSE.postLoadHooks = [];
+    CCSE.postLoadHooks.push(MyMod.launch);
+  }
 }
