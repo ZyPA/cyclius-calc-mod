@@ -16,8 +16,10 @@ If you have any sort of experience with the modding api for Cookie Clicker and h
 - Shows you the current bonuses of all the slots.
 - Shows you whether theyre increasing or decreasing.
 - Suggests what the best slot would be right now.
+- Has alerts that tells you if your current slot is no longer the best!
 - Poorly optimized code :D (the mod is so small that it shouldnt really be an issue tho.)
 
 # Todo:
 - Optimize the code.
 - Rewrite the mod to fully utilize CCSE's functionality.
+- Add a config tab to toggle alerts and alert sounds.
