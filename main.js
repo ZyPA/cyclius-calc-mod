@@ -20,6 +20,7 @@ MyMod.launch = function () {
     loadMod: function () {
       this.loadCSS('https://zypa.github.io/cyclius-calc-mod/main.css');
       requestAnimationFrame(() => this.renderMod());
+      const notificationTimer = setInterval(() => this.handleNotification(), 1000 / 60)
     },
     getMult: function (time, slot) {
       switch (slot) {
@@ -94,8 +95,8 @@ MyMod.launch = function () {
           return 'none';
       }
     },
-    capitalize: function(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
+    capitalize: function (str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
     renderMod: function () {
       var now = new Date().getTime() / 1000 / 60 / 60;
@@ -118,6 +119,10 @@ MyMod.launch = function () {
       cyclius.desc2 = loc('Effect cycles over %1 hours.', 12) + el('ruby');
       cyclius.desc3 = loc('Effect cycles over %1 hours.', 24) + el('jade');
 
+      requestAnimationFrame(() => this.renderMod());
+    },
+    handleNotification: function () {
+      var now = new Date().getTime() / 1000 / 60 / 60;
       if (
         this.getActiveSlot() != this.getBest(now, this.getActiveSlot()) &&
         this.hasNotified != true
@@ -126,7 +131,9 @@ MyMod.launch = function () {
         PlaySound('snd/spellFail.mp3');
         Game.Notify(
           `Your cyclius slot is no longer the best.`,
-          `The best slot is now ${this.capitalize(this.getBest(now, this.getActiveSlot()))}.`,
+          `The best slot is now ${this.capitalize(
+            this.getBest(now, this.getActiveSlot())
+          )}.`,
           [24, 18]
         );
       } else if (
@@ -135,8 +142,6 @@ MyMod.launch = function () {
       ) {
         this.hasNotified = false;
       }
-
-      requestAnimationFrame(() => this.renderMod());
     },
     loadCSS: function (src) {
       var cssId = 'cycliusCalc';
