@@ -14,13 +14,19 @@ MyMod.launch = function () {
       let MOD = this;
       MOD.hasNotified = false;
 
+      MOD.now = () => Game.time / 1000 / 60 / 60;
+      MOD.capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
+
       CCSE.MinigameReplacer(() => MOD.loadMod(), 'Temple');
       MyMod.isLoaded = 1;
     },
     loadMod: function () {
       this.loadCSS('https://zypa.github.io/cyclius-calc-mod/main.css');
       requestAnimationFrame(() => this.renderMod());
-      const notificationTimer = setInterval(() => this.handleNotification(), 1000 / 60)
+      const notificationTimer = setInterval(
+        () => this.handleNotification(),
+        1000 / 60
+      );
     },
     getMult: function (time, slot) {
       switch (slot) {
@@ -96,24 +102,26 @@ MyMod.launch = function () {
       }
     },
     capitalize: function (str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
+      return 
     },
     renderMod: function () {
-      var now = new Date().getTime() / 1000 / 60 / 60;
       var cyclius = Game.Objects['Temple'].minigame.gods.ages;
       const el = (slot) =>
         `<div class="cyclius-calc-container ${slot}-container"><span class="cyclius-calc-value ${slot}-value ${
-          this.getMult(now, slot) > 0 ? 'green' : 'red'
+          this.getMult(this.now(), slot) > 0 ? 'green' : 'red'
         }" data-is-increasing="${
-          this.getMult(now, slot) < this.getMult(now + 1 / 1000 / 60 / 60, slot)
+          this.getMult(this.now(), slot) <
+          this.getMult(this.now() + 1 / 1000 / 60 / 60, slot)
             ? 'true'
             : 'false'
         }">${
-          (this.getMult(now, slot) > 0 ? '+' : '-') +
-          Beautify(Math.abs(this.getMult(now, slot)), 2) +
+          (this.getMult(this.now(), slot) > 0 ? '+' : '-') +
+          Beautify(Math.abs(this.getMult(this.now(), slot)), 2) +
           '%'
         }</span><span class="cyclius-calc-bis ${slot}-bis" data-is-best="${
-          this.getBest(now, this.getActiveSlot()) == slot ? 'true' : 'false'
+          this.getBest(this.now(), this.getActiveSlot()) == slot
+            ? 'true'
+            : 'false'
         }">⭐</span></div>`;
       cyclius.desc1 = loc('Effect cycles over %1 hours.', 3) + el('diamond');
       cyclius.desc2 = loc('Effect cycles over %1 hours.', 12) + el('ruby');
@@ -122,9 +130,9 @@ MyMod.launch = function () {
       requestAnimationFrame(() => this.renderMod());
     },
     handleNotification: function () {
-      var now = new Date().getTime() / 1000 / 60 / 60;
       if (
-        this.getActiveSlot() != this.getBest(now, this.getActiveSlot()) &&
+        this.getActiveSlot() !=
+          this.getBest(this.now(), this.getActiveSlot()) &&
         this.hasNotified != true
       ) {
         this.hasNotified = true;
@@ -132,12 +140,13 @@ MyMod.launch = function () {
         Game.Notify(
           `Your cyclius slot is no longer the best.`,
           `The best slot is now ${this.capitalize(
-            this.getBest(now, this.getActiveSlot())
+            this.getBest(this.now(), this.getActiveSlot())
           )}.`,
           [24, 18]
         );
       } else if (
-        this.getActiveSlot() == this.getBest(now, this.getActiveSlot()) &&
+        this.getActiveSlot() ==
+          this.getBest(this.now(), this.getActiveSlot()) &&
         this.hasNotified == true
       ) {
         this.hasNotified = false;
