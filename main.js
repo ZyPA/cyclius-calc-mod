@@ -6,8 +6,13 @@ var MyMod = cycliusCalc;
 MyMod.launch = function () {
   Game.registerMod('cycliusCalc', {
     init: function () {
-      Game.Notify(`Cyclius Calculator loaded!`, '', [16, 5]);
+      Game.Notify(
+        `Cyclius Calculator loaded!`,
+        `Now with suggestions!`,
+        [24, 18]
+      );
       let MOD = this;
+      MOD.hasNotified = false;
 
       CCSE.MinigameReplacer(() => MOD.loadMod(), 'Temple');
       MyMod.isLoaded = 1;
@@ -38,22 +43,7 @@ MyMod.launch = function () {
         rubyAvg = [],
         jadeAvg = [];
 
-      switch (Game.hasGod('ages')) {
-        case 1:
-          var activeSlot = 'diamond';
-          break;
-        case 2:
-          var activeSlot = 'ruby';
-          break;
-        case 3:
-          var activeSlot = 'jade';
-          break;
-        default:
-          var activeSlot = 'none';
-          break;
-      }
-
-      const current = this.getMult(time, activeSlot),
+      const current = this.getMult(time, this.getActiveSlot()),
         dia = this.getMult(time, 'diamond'),
         ruby = this.getMult(time, 'ruby'),
         jade = this.getMult(time, 'jade');
@@ -71,7 +61,6 @@ MyMod.launch = function () {
       if (
         jadeAvg >= rubyAvg &&
         jadeAvg >= diaAvg &&
-        jadeAvg >= 0 &&
         jade >= current &&
         jade >= 0
       )
@@ -79,7 +68,6 @@ MyMod.launch = function () {
       else if (
         rubyAvg >= jadeAvg &&
         rubyAvg >= diaAvg &&
-        rubyAvg >= 0 &&
         ruby >= current &&
         ruby >= 0
       )
@@ -87,13 +75,27 @@ MyMod.launch = function () {
       else if (
         diaAvg >= jadeAvg &&
         diaAvg >= rubyAvg &&
-        diaAvg >= 0 &&
         dia >= current &&
         dia >= 0
       )
         return 'diamond';
-      else if (current >= 0) return activeSlot;
+      else if (current >= 0) return this.getActiveSlot();
       else return 'none';
+    },
+    getActiveSlot: function () {
+      switch (Game.hasGod('ages')) {
+        case 1:
+          return 'diamond';
+        case 2:
+          return 'ruby';
+        case 3:
+          return 'jade';
+        default:
+          return 'none';
+      }
+    },
+    capitalize: function(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
     },
     renderMod: function () {
       var now = new Date().getTime() / 1000 / 60 / 60;
@@ -101,14 +103,39 @@ MyMod.launch = function () {
       const el = (slot) =>
         `<div class="cyclius-calc-container ${slot}-container"><span class="cyclius-calc-value ${slot}-value ${
           this.getMult(now, slot) > 0 ? 'green' : 'red'
-        }" data-is-increasing="${this.getMult(now, slot) < this.getMult(now + 1 / 1000 / 60 / 60, slot) ? 'true' : 'false'}">${
+        }" data-is-increasing="${
+          this.getMult(now, slot) < this.getMult(now + 1 / 1000 / 60 / 60, slot)
+            ? 'true'
+            : 'false'
+        }">${
           (this.getMult(now, slot) > 0 ? '+' : '-') +
           Beautify(Math.abs(this.getMult(now, slot)), 2) +
           '%'
-        }</span><span class="cyclius-calc-bis ${slot}-bis" data-is-best="${this.getBest(now) == slot ? 'true' : 'false'}">⭐</span></div>`;
+        }</span><span class="cyclius-calc-bis ${slot}-bis" data-is-best="${
+          this.getBest(now, this.getActiveSlot()) == slot ? 'true' : 'false'
+        }">⭐</span></div>`;
       cyclius.desc1 = loc('Effect cycles over %1 hours.', 3) + el('diamond');
       cyclius.desc2 = loc('Effect cycles over %1 hours.', 12) + el('ruby');
       cyclius.desc3 = loc('Effect cycles over %1 hours.', 24) + el('jade');
+
+      if (
+        this.getActiveSlot() != this.getBest(now, this.getActiveSlot()) &&
+        this.hasNotified != true
+      ) {
+        this.hasNotified = true;
+        PlaySound('snd/spellFail.mp3');
+        Game.Notify(
+          `Your cyclius slot is no longer the best.`,
+          `The best slot is now ${this.capitalize(this.getBest(now, this.getActiveSlot()))}.`,
+          [24, 18]
+        );
+      } else if (
+        this.getActiveSlot() == this.getBest(now, this.getActiveSlot()) &&
+        this.hasNotified == true
+      ) {
+        this.hasNotified = false;
+      }
+
       requestAnimationFrame(() => this.renderMod());
     },
     loadCSS: function (src) {
