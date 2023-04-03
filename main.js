@@ -101,9 +101,6 @@ MyMod.launch = function () {
           return 'none';
       }
     },
-    capitalize: function (str) {
-      return 
-    },
     renderMod: function () {
       var cyclius = Game.Objects['Temple'].minigame.gods.ages;
       const el = (slot) =>
