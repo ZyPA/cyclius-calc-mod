@@ -1,4 +1,5 @@
-> [!NOTE] This mod is NOT abandoned, im just taking a break from working on it, as i've kinda lost interest in modding this game. But i will still be reading up on how to improve it.
+> [!NOTE]
+> This mod is NOT abandoned, im just taking a break from working on it, as i've kinda lost interest in modding this game. But i will still be reading up on how to improve it.
 
 
 # Cyclius Calculator Mod
