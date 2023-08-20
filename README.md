@@ -1,4 +1,8 @@
+> [!NOTE] This mod is NOT abandoned, im just taking a break from working on it, as i've kinda lost interest in modding this game. But i will still be reading up on how to improve it.
+
+
 # Cyclius Calculator Mod
+
 Hello, this is my first ever mod for cookie clicker, its based on a <a href="https://zypa.github.io/cyclius-calc/">website</a> i made of the same name, now the features are just implemented directly into the game.
 As this is my first Cookie Clicker mod id love to hear feedback on how to improve it.
 
@@ -20,6 +24,6 @@ If you have any sort of experience with the modding api for Cookie Clicker and h
 - Poorly optimized code :D (the mod is so small that it shouldnt really be an issue tho.)
 
 # Todo:
-- Optimize the code.
-- Rewrite the mod to fully utilize CCSE's functionality.
-- Add a config tab to toggle alerts and alert sounds.
+- [ ] Optimize the code.
+- [ ] Rewrite the mod to fully utilize CCSE's functionality.
+- [ ] Add a config tab to toggle alerts and alert sounds.
